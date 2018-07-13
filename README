@@ -1,0 +1,53 @@
+To run the benchmark
+
+If you want to re-run the dimensionality reduction methods:
+- Install python3 and the umap-learn package (using pip or https://github.com/lmcinnes/umap)
+- Install FItSNE (https://github.com/KlugerLab/FIt-SNE) then copy the FIt-SNE folder to this directory. Edit the fast_tsne.R file and replace the default "fast_tsne_path" argument by "../FIt-SNE/bin/fast_tsne"
+- Install scvis (https://bitbucket.org/jerry00/scvis-dev)
+
+Please remember that every script requires you to set the working directory to the one where the script lies before running it
+
+If you only want to re-generate the graphs, all intermediary results are saved: most of the heavy computations' results are saved and bundled together with the code. The full benchmark takes about a week to complete on our 8 core computer, but if you only benchmark UMAP and t-SNE it should only take a few hours. Most scripts are either to run dimensionality reduction or to make figures, usually not both.
+
+Here is a brief summary of what every script does :
+
+** Main figure scripts **
+* Generate the embeddings and corresponding main figures of the paper
+
+ ./Han/data_parsing.R : Parsing input data for the Han[Bone marrow + PBMC] dataset
+ ./Han/graphs_full_dataset.R : Filtering the Han[Bone marrow + PBMC] dataset
+ ./Han/DR_on_data_subset.R : Dimensionality reduction on the subsetted Han[Bone marrow + PBMC] dataset
+ ./Han/graphs_paper.R : Graphs for the Han[Bone marrow + PBMC] dataset (Fig 2CDEF)
+ 
+ ./Samusik/Samusik_01_data_load_and_DR.R : Parsing, dimensionality reduction and graphs for the Samusik_01 dataset (Fig 2AB)
+
+ ./Wong/RunFCStSNEone TraffickTNK 10k.R : Downsample to 10k cells per sample, run t-SNE and UMAP on the Wong dataset. This is a script used within our lab meant for non-programmers to use these tools and it is shared as is. This script is an interface to functions definned in./Wong/FCStSNEone.R
+ ./Wong/data_parsing.R : Data parsing for the Wong datasets
+ ./Wong/Wong.R : Graphs for the Wong datasets (Fig 1 ABCD)
+ ./Wong/FCStSNEone.R : Not to be ran
+
+** Extended benchmark scripts [Supplementary Notes] **
+
+* Parse inputs for the benchmark [Supplementary notes and most of the supplementary figures]
+
+ ./Han_400k/data_parsing_full_dataset.R : Parsing the Han_400k dataset
+ ./Han_400k/DR.R : Running UMAP, t-SNE, FIt-SNE, FIt-SNE l.e. on the Han_400k dataset
+
+ ./Samusik/Samusik_all_data_load_and_DR.R : Parsing the Samusik_all dataset and running UMAP, t-SNE, FIt-SNE, FIt-SNE l.e.
+
+* Generate embeddings for the benchmark
+
+ ./Benchmark_global/DR.R : Generates embeddings for subsamples t-SNE, FIt-SNE, FIt-SNE l.e. and UMAP for the Wong, Han_400k and Samusik datasets
+ ./Benchmark_global/scvis.R : Run scvis on the above datasets
+ ./Benchmark_global/rdata/Single seeds/combine_seeds.R : This is to recompile results from the benchmark if it could not be completed in one go. This also adds scvis.R outputs to DR.R outputs
+ 
+* Generate plots for the benchmark
+ ./Benchmark_global/graphs_benchmark.R [Fig S1, Fig S3B, Fig S4, Fig S5, Fig S6]
+ ./Benchmark_global/random_forests.R [Fig S3A]
+ 
+* Misc
+ ./Benchmark_global/tSNE_parameters.R : Small benchmark perplexity and max iterations for t-SNE
+ ./FIt-SNE/fast_tsne.R : R wrapper for FIt-SNE. Install using release on https://github.com/KlugerLab/FIt-SNE .
+ ./utils.R : Some functions that are used throughout the other scripts. You may need to specify your python executable here (default to /usr/bin/python3)
+
+
