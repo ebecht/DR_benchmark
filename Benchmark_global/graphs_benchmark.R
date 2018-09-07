@@ -33,7 +33,7 @@ pars$pch=pchCode[pars$datasets]
 ## Plotting
 ####
 
-png("./graphs/Execution timing.png",res=300,width=1000,height=1000)
+pdf("./graphs/Execution timing.pdf",height=3.5,width=3.5)
 par("bty"="n",mar=c(4,4,1,1),cex=0.75)
 x=log10(n_cells)
 ## Main plot
@@ -71,7 +71,7 @@ algorithms=c("UMAP","tSNE","FItSNE","FItSNE_le","scvis")
 datasets=c("Samusik","Wong","Han_400k")
 
 set.seed(123)
-png("./graphs/Preservation of distances.png",height=(length(algorithms)+0.5)*750,width=length(datasets)*750,res=300)
+pdf("./graphs/Preservation of distances.pdf",height=(length(algorithms)+0.5)*750/2000*7,width=length(datasets)*750/2000*7)
 layout(matrix(nrow=length(algorithms)+1,ncol=length(datasets),data=1:((length(algorithms)+1)*length(datasets)),byrow=FALSE),heights=c(rep(1,length(algorithms)),0.5))
 par(bty="l",xaxt="n",yaxt="n",mar=c(0,1,1,0),oma=c(6,3,4,1))
 rs=sapply(datasets,function(dataset){
@@ -282,16 +282,24 @@ means=apply(replicability[,,,],c(1,2,3),mean) ## Average
 sds=apply(replicability[,,,],c(1,2,3),sd) ## Standard deviation
 
 ## Graph output
-png("./graphs/Replicability_of_embeddings.png",res=300,height=2000,width=2000)
+pdf("./graphs/Replicability_of_embeddings.pdf",height=2000/300,width=2000/300)
 options(scipen=999)
 layout(matrix(nrow=dim(means)[1],ncol=dim(means)[3],data=1:prod(dim(means)[c(1,3)]),byrow=FALSE))
 par(mar=c(0,1,0,1),oma=c(8,8,2,0),bty="n")
 for(dataset in dimnames(means)[[3]]){
     for(i in dimnames(means)[[1]]){
-        ## Barplots and error bars
+        ## Barplots
         bp=barplot(means[i,,dataset],col=colorCode[dimnames(means)[[2]]],bty="n",ylim=c(0,1.2),names.arg=FALSE,yaxt="n")
-        segments(x0=bp,y0=means[i,,dataset]-sds[i,,dataset],y1=means[i,,dataset]+sds[i,,dataset])
 
+        ## Data points
+        for(alg in dimnames(means)[[2]]){
+            points(x=rep(bp[match(alg,dimnames(means)[[2]]),],dim(replicability)[4]),y=replicability[i,alg,dataset,],pch=16,col=colorCode[alg],xpd=NA)
+            points(x=rep(bp[match(alg,dimnames(means)[[2]]),],dim(replicability)[4]),y=replicability[i,alg,dataset,],pch=1,col="black",xpd=NA)
+        }
+
+        ## Error bars
+        segments(x0=bp,y0=means[i,,dataset]-sds[i,,dataset],y1=means[i,,dataset]+sds[i,,dataset])
+                
         ## Annotations
         if(dataset==dimnames(means)[[3]][1]){
             axis(side=2,at=seq(0,1,by=0.5),labels=c(0,0.5,1),las=1,line=0)
@@ -400,13 +408,21 @@ pars$col=colorCode[pars$algorithms]
 pars$pch=pchCode[pars$datasets]
 
 ## Graph output
-png("./graphs/Mutual information of kmeans.png",height=1000,width=3000,res=300)
+pdf("./graphs/Mutual information of kmeans.pdf",height=1000/300,width=3000/300)
 par(mfrow=c(1,3),mar=c(3,4,3,1))
 for(dataset in datasets){
-    ## Barplots and error bars
+    ## Barplots
     bp=barplot(means[,dataset],names.arg=FALSE,ylim=c(0,max(means[,dataset]+sds[,dataset])),main=dataset,col=colorCode[rownames(means)])
+    
+    ## Data points
+    for(alg in dimnames(means)[[1]]){
+        points(x=rep(bp[match(alg,dimnames(means)[[1]]),],dim(mi)[3]),y=mi[alg,dataset,],pch=16,col=colorCode[alg],xpd=NA)
+        points(x=rep(bp[match(alg,dimnames(means)[[1]]),],dim(mi)[3]),y=mi[alg,dataset,],pch=1,col="black",xpd=NA)
+    }
+    
+    ## Error bars
     segments(x0=bp[,1],y0=means[,dataset]-sds[,dataset],y1=means[,dataset]+sds[,dataset],lwd=2)
-
+                
     ## Axes and nnotations
     text(y=line2user(1,1),x=bp,labels=sub("tSNE","t-SNE",rownames(means)),xpd=NA,pos=1,offset=0,font=2)
     if(dataset==head(datasets,1)){
@@ -510,14 +526,21 @@ acc=sapply(datasets,function(dataset){
 })
 
 ## Graph output
-png("./graphs/Accuracy of Random Forests.png",height=2000,width=2000,res=300)
+pdf("./graphs/Accuracy of Random Forests.pdf",height=2000/300,width=2000/300)
 means=rowMeans(acc) ## Compute mean across datasets
 sds=apply(acc,1,sd) ## SD across datasets
 cols=rep("gray",length(means))
 cols[names(means)%in%names(colorCode)]=colorCode[intersect(names(means),names(colorCode))]
 
-## Barplot and error bars
-bp=barplot(means,ylim=c(0,1),names.arg=FALSE)
+## Barplot
+bp=barplot(means,ylim=c(0,1),names.arg=FALSE,col=cols)
+
+## Data points
+for(alg in names(means)){
+    points(x=rep(bp[match(alg,names(means)),],dim(acc)[2]),y=acc[alg,],pch=pchCode[dimnames(acc)[[2]]],xpd=NA)
+}
+
+## Error bars
 segments(x0=bp[,1],y0=means-sds,y1=means+sds,lwd=2)
 
 ## Annotations
@@ -526,4 +549,5 @@ segments(y0=line2user(1.25,1),x0=bp[1],x1=bp[3],xpd=NA)
 segments(y0=line2user(1.25,1),x0=bp[6],x1=bp[7],xpd=NA)
 text(y=line2user(1.5,1),x=c(bp[2],mean(bp[6:7])),labels=c("PCA","FIt-SNE"),xpd=NA,pos=1,offset=0,font=2)
 title(ylab="Accuracy of RF-classifier on held-out data",font.lab=2)
+legend(x="topleft",pch=c(NA,pchCode),legend=c("Dataset:",names(pchCode)),bty="n")
 dev.off()
