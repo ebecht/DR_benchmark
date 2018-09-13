@@ -102,7 +102,7 @@ rs=sapply(datasets,function(dataset){
     rs=sapply(names(d),function(alg){
         
         ## Plot distance on the original space vs distance on the DR plot for each pair of point as boxplots
-        bp=boxplot(d[[alg]]~cuts,outline=FALSE,xaxt="n")
+        bp=boxplot(d[[alg]]~cuts,outline=FALSE,xaxt="n",col=colorCode[alg])
         
         ## Report Pearson's correlation coefficient on the graph
         r=cor(d[[alg]],d_xp,method="pearson")
