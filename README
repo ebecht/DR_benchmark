@@ -46,8 +46,8 @@ Here is a brief summary of what every script does :
  ./Benchmark_global/rdata/Single seeds/combine_seeds.R : This is to recompile results from the benchmark if it could not be completed in one go. This also adds scvis.R outputs to DR.R outputs
  
 * Generate plots for the benchmark
- ./Benchmark_global/graphs_benchmark.R [Fig S1, Fig S3B, Fig S4, Fig S5, Fig S6]
- ./Benchmark_global/random_forests.R [Fig S3A]
+ ./Benchmark_global/graphs_benchmark.R [Fig 3, Fig 4b, Fig 5, Fig 6, Fig S5, Fig S6]
+ ./Benchmark_global/random_forests.R [Fig 4A]
  
 * Misc
  ./Benchmark_global/tSNE_parameters.R : Small benchmark perplexity and max iterations for t-SNE
