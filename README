@@ -1,6 +1,6 @@
 This repository contains the code to reproduce our dimensionality reduction methods benchmark, with a focus on single cells. The same code bundled with input data and computations' outputs is available at https://figshare.com/s/9c3a0136f12b97f1dadd
 
-Our article is currently submitted but a pre-print is available at https://www.biorxiv.org/content/early/2018/04/10/298430
+Our article is now published at https://www.nature.com/articles/nbt.4314 and an earlier version is avialable as a pre-print at https://www.biorxiv.org/content/early/2018/04/10/298430
 
 To run the benchmark
 
